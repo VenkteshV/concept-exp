@@ -1,0 +1,3 @@
+,app,F1_10,F1_5,F1_all,P_10,P_5,recall_10,recall_5
+0,Inspec_EmbedRankSentenceBERT.out,0.223100 bl ,0.176600 bl ,0.176600 bl ,0.268300 bl ,0.331200 bl ,0.198300 bl ,0.126700 bl 
+1,Inspec_EmbedRank.out,0.225700   ,0.177300   ,0.177300   ,0.272200   ,0.333500   ,0.202700   ,0.126900   
