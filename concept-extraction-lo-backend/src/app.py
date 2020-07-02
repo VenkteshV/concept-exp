@@ -3,9 +3,11 @@ import os
 from flask import Flask, jsonify, make_response
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
-from routes import bayes_opt_api
+from routes import concept_expansion_api
+
 
 APP = Flask(__name__)
+cors = CORS(APP)
 
 ### swagger ###
 # SWAGGER_URL = '/swagger'
@@ -19,7 +21,7 @@ APP = Flask(__name__)
 # )
 # APP.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
-APP.register_blueprint(bayes_opt_api.get_blueprint())
+APP.register_blueprint(concept_expansion_api.get_blueprint())
 
 
 @APP.errorhandler(400)
