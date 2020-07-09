@@ -36,17 +36,11 @@ export  function* watchRunExperimentsRequest() {
   }
 }
 export function* runexperiments(searchAction) {
-  console.log("searchAction", searchAction.payload.benchmark.value)
+  console.log("searchAction", searchAction.payload.skillname.value)
   try {
-    const selectedFlagToTune = searchAction.payload.selectedFlags;
-    if (_.isEqual(searchAction.payload.selectedExp.value, "annealing")) {
-    const response = yield call(callPost, '/jvmtuning/'+searchAction.payload.workload.value+'/'+searchAction.payload.metric.value+'/'+searchAction.payload.benchmark.value, selectedFlagToTune);
-    }
-    else {
-      yield call(callPost, '/jvmtuning/bayesopt/'+searchAction.payload.workload.value+'/'+searchAction.payload.metric.value + '/'+searchAction.payload.benchmark.value, selectedFlagToTune);
-    }
+    const response = yield call(callPost, '/getbloomverbs/'+searchAction.payload.skillname.value);
+    
     console.log("response", response);
-    yield call(delay,100000);
     // const values = _.cloneDeep(yield select(selectedValues));
     // values.push(...searchAction.payload.searchValue)
     yield put({

@@ -7,7 +7,7 @@ body {
 
 input,
 textarea,
-select,
+select_skill,
 button {
   letter-spacing: 0.075rem;
 }
@@ -35,8 +35,17 @@ button {
   box-sizing: border-box;
 }
 
-.select{
-  margin-top:2rem;
+.cognitive_level {
+  float: right;
+  margin-left: 10rem;
+}
+.bloom_taxonomy{
+  float: right;
+  margin-left: 6rem;
+}
+.select_skill{
+  margin-top:10rem;
+  margin-left: 5rem;
   width: 30rem;
 }
 

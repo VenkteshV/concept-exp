@@ -5,6 +5,8 @@ import Logo from "../images/baseline-check_circle_outline-24px.svg";
 import { Button } from 'react-bootstrap';
 import GraphVis from './GraphVis.jsx';
 import _ from 'lodash';
+import Select from 'react-select';
+import PropTypes from 'prop-types';
 
 
 class Upload extends Component {
@@ -16,6 +18,9 @@ class Upload extends Component {
       uploadProgress: {},
       successfullUploaded: false,
       keywords: {},
+      skillname: '',
+      bloomVerbs:'',
+      bloomtaxonomy:''
     };
 
     this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -23,6 +28,64 @@ class Upload extends Component {
     this.sendRequest = this.sendRequest.bind(this);
     this.renderActions = this.renderActions.bind(this);
     this.expandConcepts = this.expandConcepts.bind(this);
+    this.handleSkillChange = this.handleSkillChange.bind(this);
+    this.getCognitiveComplexity = this.getCognitiveComplexity.bind(this);
+
+  }
+
+  getCognitiveComplexity() {
+
+    let file = this.state.files[0];
+    const req = new XMLHttpRequest();
+
+    let response = {};
+
+    const formData = new FormData();
+    formData.append("document", file, file.name);
+
+
+    req.open("POST", "http://localhost:5000/getcognitivetaxonomy");
+    
+    // this.props.fetchBloomVerbs({skillname: event})
+    req.send(formData);
+    let self = this;
+
+    req.onload = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          response = JSON.parse(this.responseText)
+      }
+      console.log("bloomtaxonomy", response)
+      self.setState({bloomtaxonomy: response})
+    }
+
+  }
+
+  handleSkillChange(event){
+    this.setState({skillname: event})
+    let file = this.state.files[0];
+    const req = new XMLHttpRequest();
+
+    let response = {};
+
+    const formData = new FormData();
+    formData.append("document", file, file.name);
+
+
+    req.open("POST", "http://localhost:5000/getbloomverbs/"+ event.value);
+    
+    // this.props.fetchBloomVerbs({skillname: event})
+    req.send(formData);
+    let self = this;
+
+    req.onload = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          response = JSON.parse(this.responseText)
+      }
+      console.log("response", response)
+      self.setState({bloomVerbs: response})
+    }
   }
 
   onFilesAdded(files) {
@@ -168,6 +231,7 @@ class Upload extends Component {
   }
 
   render() {
+    console.log("bloomtaxonomy", this.state.bloomtaxonomy["bloomtaxonomy"]);
     return (
       <div className="UploadFile">
       <div className="Card">
@@ -193,7 +257,55 @@ class Upload extends Component {
         </div>
         <div className="Actions">{this.renderActions()}</div>
       </div>
+      <div className = "cognitive_level">        
+        <span className="Title">Select Cognitive complexity level</span>
+        <Select key={_.uniqueId()} className="select_skill"
+              options={[{ "label": "Knowledge & understanding ", "value": "Understanding" },
+               { "label": "Skills & Application", "value": "Applying" }, 
+               { "label": "Remembering", "value": "Remembering" },
+               { "label": "Applying", "value": "Applying" },
+               { "label": "Analysing", "value": "Analysing" },
+               { "label": "Evaluating", "value": "Evaluating" },
+               { "label": "Creating", "value": "Creating" }]}
+              value={this.state.skillname}
+              onChange={this.handleSkillChange}
+            /></div>
+         <div className = "bloom_taxonomy"> 
+         <span className="Title"> Infer Cognitive complexity</span>
+           <Button onClick = {this.getCognitiveComplexity}
+        >
+          Cognitive Complexity
+        </Button></div>
       </div>
+
+
+       
+      <div className="Card">
+      {!_.isEmpty( this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
+      <div>
+      <span className="Title">Matching Cognitive Complexity</span>
+      <ul>
+            { this.state.bloomtaxonomy["bloomtaxonomy"].map(verb => (
+              <li key = {_.uniqueId()}>
+                  <div>{verb}</div>
+              </li>
+            ))}
+            </ul> </div>) : (null)}
+      </div>
+ 
+      <div className="Card">
+      {!_.isEmpty(this.state.bloomVerbs["bloomverbs"]) ? (
+      <div>
+      <span className="Title">Matching Bloom Verbs</span>
+      <ul>
+            {this.state.bloomVerbs['bloomverbs'].map(verb => (
+              <li key = {_.uniqueId()}>
+                  <div>{verb}</div>
+              </li>
+            ))}
+            </ul> </div>) : (null)}
+      </div>
+ 
       {
           !_.isEmpty(this.state.keywords) ?
         (<div> <GraphVis  keywords={this.state.keywords}/>         <Button onClick = {this.expandConcepts}
@@ -205,5 +317,8 @@ class Upload extends Component {
     );
   }
 }
+Upload.propTypes = {
+  fetchBloomVerbs: PropTypes.func,
+};
 
 export default Upload;
