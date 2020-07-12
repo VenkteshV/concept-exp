@@ -74,6 +74,7 @@ def keyword_extraction(expand=False):
                 EmbedRankSentenceUSE_object.ExtractKeyphrases()
                 EmbedRankSentenceUSE_object.Convert2Trec_Eval(EvaluationStemming)
             elif algorithm == 'CoTagRankUSE':
+                print("pathData", pathData)
                 ConceptRankUSE_object = CoTagRankUSE(numOfKeyphrases, pathData, dataset_name,
                                                                         normalization)
                                                         
@@ -121,7 +122,7 @@ if __name__ == '__main__':
     #warning SemEval 2010 can take a long time as they are lengthy 
     #scientific articles. KhanAcad mostly has shorter text but some long transcripts too
     # to evaluate quality of concepts extracted and might take time to run for all 2429 files
-    ListOfDatasets = ['Inspec']
+    ListOfDatasets = ['cbse_data']
     parser = argparse.ArgumentParser()
     parser.add_argument("--expand", help="expand extracted concepts (works only with cotagrank)")
     args = parser.parse_args()
@@ -133,9 +134,10 @@ if __name__ == '__main__':
 
 # 'SingleRank', 'TopicalPageRank','TextRank',EmbedRankSentenceUSE,
 #  'CoTagRankUSE', 'EmbedRankSentenceBERT','EmbedRank'
-    ListOfAlgorithms = ['EmbedRankSentenceBERT','EmbedRank']
-
-    pathData = 'data'
+    ListOfAlgorithms = ['CoTagRankUSE']
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dataPath = (dir_path + '/data')
+    pathData = dataPath
     pathOutput = pathData + "/conversor/output/"
     pathDataset = pathData + "/Datasets/"
     pathKeyphrases = pathData + "/Keywords/"

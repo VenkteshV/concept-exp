@@ -3,6 +3,8 @@ from flask import jsonify, abort, request, Blueprint
 from main.extract_concepts import extract_concepts, expand_concepts
 from main.bloom_verbs import extract_bloom_verbs, get_bloom_taxonomy
 
+from main.predict_taxonomy import predict_taxonomy
+
 REQUEST_API = Blueprint('request_api', __name__)
 
 def get_blueprint():
@@ -60,3 +62,17 @@ def get_cognitive_complexity():
     bloom_verbs = get_bloom_taxonomy(text)
 
     return jsonify({"bloomtaxonomy": bloom_verbs})
+
+
+
+@REQUEST_API.route('/predicttaxonomy', methods=['POST'])
+def predict_tax():
+    """triggers code to predict hierarchy
+    """
+    if not request.files:
+        abort(400)
+    body = request.files["document"]
+    text = body.read().decode("utf-8")
+    output = predict_taxonomy(text)
+
+    return jsonify({"bloomtaxonomy": output})

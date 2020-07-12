@@ -4,6 +4,7 @@ import Progress from "./Progress.jsx";
 import Logo from "../images/baseline-check_circle_outline-24px.svg";
 import { Button } from 'react-bootstrap';
 import GraphVis from './GraphVis.jsx';
+import Hierarchyvis   from './Hierarchyvis.jsx'
 import _ from 'lodash';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
@@ -20,7 +21,8 @@ class Upload extends Component {
       keywords: {},
       skillname: '',
       bloomVerbs:'',
-      bloomtaxonomy:''
+      bloomtaxonomy:'',
+      hierarchy: ''
     };
 
     this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -30,6 +32,7 @@ class Upload extends Component {
     this.expandConcepts = this.expandConcepts.bind(this);
     this.handleSkillChange = this.handleSkillChange.bind(this);
     this.getCognitiveComplexity = this.getCognitiveComplexity.bind(this);
+    this.getHierarchy = this.getHierarchy.bind(this);
 
   }
 
@@ -230,6 +233,33 @@ class Upload extends Component {
     }
   }
 
+  getHierarchy() {
+    let file = this.state.files[0];
+    const req = new XMLHttpRequest();
+
+    let response = {};
+
+    const formData = new FormData();
+    formData.append("document", file, file.name);
+
+
+    req.open("POST", "http://localhost:5000/predicttaxonomy");
+    
+    // this.props.fetchBloomVerbs({skillname: event})
+    req.send(formData);
+    let self = this;
+
+    req.onload = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          response = JSON.parse(this.responseText)
+      }
+      console.log("bloomtaxonomy", response)
+      self.setState({hierarchy: response})
+    }
+
+  }
+
   render() {
     console.log("bloomtaxonomy", this.state.bloomtaxonomy["bloomtaxonomy"]);
     return (
@@ -276,9 +306,19 @@ class Upload extends Component {
         >
           Cognitive Complexity
         </Button></div>
+
+        <div className = "hierarchy"> 
+         <span className="Title"> Get Hierarchy</span>
+           <Button onClick = {this.getHierarchy}
+        >
+          Hierarchical Taxonomy
+        </Button></div>
       </div>
 
-
+      {
+          !_.isEmpty(this.state.hierarchy) ?
+        (<div> <Hierarchyvis  hierarchy={this.state.hierarchy}/>   </div>) : (null)
+        }
        
       <div className="Card">
       {!_.isEmpty( this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
