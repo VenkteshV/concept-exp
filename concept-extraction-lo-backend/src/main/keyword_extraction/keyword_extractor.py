@@ -12,7 +12,7 @@ class KeywordExtractor:
     def run(self, doc_text, text=None, lda_model=None, dictionary=None, lists=None, method=None, highlight = False, expand=False):
         if method == 'CoTagRank':
             phrases = self.phrase_extractor.run(doc_text, lists)
-            text_embedding, phrase_embeddings = self.embed.run(doc_text, text, phrases, lda_model, dictionary) 
+            text_embedding, phrase_embeddings = self.embed.run(doc_text, text, phrases, lda_model, dictionary,expand) 
             ranked_phrases, phrases_with_positions = self.rank.run(doc_text, phrases, text_embedding,
             phrase_embeddings, highlight)
             if expand:
@@ -34,7 +34,7 @@ class KeywordExtractor:
                 # concepts = [(concept,score) for score, concept in ranked_phrases]
                 # similar_concepts = [concept.lower() for concept in similar_concepts]
                 # concepts.extend(similar_concepts)
-                    text_embedding, expanded_phrases_embeddings = self.embed.run(doc_text, text, concepts, lda_model, dictionary) 
+                    text_embedding, expanded_phrases_embeddings = self.embed.run(doc_text, text, concepts, lda_model, dictionary,expand) 
 
 
                 # text_embedding = np.array(self.embed.phrase_embeddings_expansion([doc_text])[0])

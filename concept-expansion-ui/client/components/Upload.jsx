@@ -4,7 +4,7 @@ import Progress from "./Progress.jsx";
 import Logo from "../images/baseline-check_circle_outline-24px.svg";
 import { Button } from 'react-bootstrap';
 import GraphVis from './GraphVis.jsx';
-import Hierarchyvis   from './Hierarchyvis.jsx'
+import Hierarchyvis from './Hierarchyvis.jsx'
 import _ from 'lodash';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
@@ -20,9 +20,10 @@ class Upload extends Component {
       successfullUploaded: false,
       keywords: {},
       skillname: '',
-      bloomVerbs:'',
-      bloomtaxonomy:'',
-      hierarchy: ''
+      bloomVerbs: '',
+      bloomtaxonomy: '',
+      hierarchy: '',
+      learningObj: ''
     };
 
     this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -33,6 +34,35 @@ class Upload extends Component {
     this.handleSkillChange = this.handleSkillChange.bind(this);
     this.getCognitiveComplexity = this.getCognitiveComplexity.bind(this);
     this.getHierarchy = this.getHierarchy.bind(this);
+    this.getLearningObj = this.getLearningObj.bind(this);
+
+  }
+
+  getLearningObj() {
+
+    let file = this.state.files[0];
+    const req = new XMLHttpRequest();
+
+    let response = {};
+
+    const formData = new FormData();
+    formData.append("document", file, file.name);
+
+
+    req.open("POST", "http://localhost:5000/fetchrankedlo");
+
+    // this.props.fetchBloomVerbs({skillname: event})
+    req.send(formData);
+    let self = this;
+
+    req.onload = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
+      }
+      console.log("fetchrankedlo", response)
+      self.setState({ learningObj: response })
+    }
 
   }
 
@@ -48,24 +78,24 @@ class Upload extends Component {
 
 
     req.open("POST", "http://localhost:5000/getcognitivetaxonomy");
-    
+
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
     let self = this;
 
-    req.onload = function() {
+    req.onload = function () {
       if (this.readyState == 4 && this.status == 200) {
-          console.log(this.responseText);
-          response = JSON.parse(this.responseText)
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
       }
       console.log("bloomtaxonomy", response)
-      self.setState({bloomtaxonomy: response})
+      self.setState({ bloomtaxonomy: response })
     }
 
   }
 
-  handleSkillChange(event){
-    this.setState({skillname: event})
+  handleSkillChange(event) {
+    this.setState({ skillname: event })
     let file = this.state.files[0];
     const req = new XMLHttpRequest();
 
@@ -75,19 +105,19 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://localhost:5000/getbloomverbs/"+ event.value);
-    
+    req.open("POST", "http://localhost:5000/getbloomverbs/" + event.value);
+
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
     let self = this;
 
-    req.onload = function() {
+    req.onload = function () {
       if (this.readyState == 4 && this.status == 200) {
-          console.log(this.responseText);
-          response = JSON.parse(this.responseText)
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
       }
       console.log("response", response)
-      self.setState({bloomVerbs: response})
+      self.setState({ bloomVerbs: response })
     }
   }
 
@@ -118,7 +148,7 @@ class Upload extends Component {
     const promises = [];
 
     this.state.files.forEach(file => {
-      promises.push(this.sendRequest(file,true));
+      promises.push(this.sendRequest(file, true));
     });
     try {
       await Promise.all(promises);
@@ -164,29 +194,29 @@ class Upload extends Component {
 
       let self = this;
 
-      req.onload = function() {
+      req.onload = function () {
         if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            response = this.responseText
+          console.log(this.responseText);
+          response = this.responseText
         }
-        self.setState({keywords: response})
+        self.setState({ keywords: response })
         console.log("fnskjfkf", self.state.keywords);
 
-    };
+      };
 
 
- 
+
 
       const formData = new FormData();
       formData.append("document", file, file.name);
 
 
-      if(isExpand) {
+      if (isExpand) {
         req.open("POST", "http://localhost:5000/concept/expand");
       }
-      else{
-      req.open("POST", "http://localhost:5000/concept/extract");
-      }      req.send(formData);
+      else {
+        req.open("POST", "http://localhost:5000/concept/extract");
+      } req.send(formData);
     });
   }
 
@@ -244,18 +274,18 @@ class Upload extends Component {
 
 
     req.open("POST", "http://localhost:5000/predicttaxonomy");
-    
+
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
     let self = this;
 
-    req.onload = function() {
+    req.onload = function () {
       if (this.readyState == 4 && this.status == 200) {
-          console.log(this.responseText);
-          response = JSON.parse(this.responseText)
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
       }
       console.log("bloomtaxonomy", response)
-      self.setState({hierarchy: response})
+      self.setState({ hierarchy: response })
     }
 
   }
@@ -263,97 +293,119 @@ class Upload extends Component {
   render() {
     console.log("bloomtaxonomy", this.state.bloomtaxonomy["bloomtaxonomy"]);
     return (
-      <div className="UploadFile">
-      <div className="Card">
-      <div className="Upload">
-        <span className="Title">Upload Files</span>
-        <div className="Content">
+      <div>
+      <div className = "card_lo">
+        {!_.isEmpty(this.state.learningObj["rankedlo"]) ? (
           <div>
-            <Dropzone
-              onFilesAdded={this.onFilesAdded}
-              disabled={this.state.uploading || this.state.successfullUploaded}
-            />
-          </div>
-          <div className="Files">
-            {this.state.files.map(file => {
-              return (
-                <div key={file.name} className="Row">
-                  <span className="Filename">{file.name}</span>
-                  {this.renderProgress(file)}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="Actions">{this.renderActions()}</div>
+            <span className="Title">Relevant Learning Objectives</span>
+            <ul>
+              {this.state.learningObj["rankedlo"].map(verb => (
+                <li key={_.uniqueId()}>
+                  <div>{verb}</div>
+                </li>
+              ))}
+            </ul> </div>) : (null)}
       </div>
-      <div className = "cognitive_level">        
-        <span className="Title">Select Cognitive complexity level</span>
-        <Select key={_.uniqueId()} className="select_skill"
+      <div className="UploadFile">
+        <div className="Card">
+          <div className="Upload">
+            <span className="Title">Upload Files</span>
+            <div className="Content">
+              <div>
+                <Dropzone
+                  onFilesAdded={this.onFilesAdded}
+                  disabled={this.state.uploading || this.state.successfullUploaded}
+                />
+              </div>
+              <div className="Files">
+                {this.state.files.map(file => {
+                  return (
+                    <div key={file.name} className="Row">
+                      <span className="Filename">{file.name}</span>
+                      {this.renderProgress(file)}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="Actions">{this.renderActions()}</div>
+          </div>
+          <div className="cognitive_level">
+            <span className="Title">Select Cognitive complexity level</span>
+            <Select key={_.uniqueId()} className="select_skill"
               options={[{ "label": "Knowledge & understanding ", "value": "Understanding" },
-               { "label": "Skills & Application", "value": "Applying" }, 
-               { "label": "Remembering", "value": "Remembering" },
-               { "label": "Applying", "value": "Applying" },
-               { "label": "Analysing", "value": "Analysing" },
-               { "label": "Evaluating", "value": "Evaluating" },
-               { "label": "Creating", "value": "Creating" }]}
+              { "label": "Skills & Application", "value": "Applying" },
+              { "label": "Remembering", "value": "Remembering" },
+              { "label": "Applying", "value": "Applying" },
+              { "label": "Analysing", "value": "Analysing" },
+              { "label": "Evaluating", "value": "Evaluating" },
+              { "label": "Creating", "value": "Creating" }]}
               value={this.state.skillname}
               onChange={this.handleSkillChange}
             /></div>
-         <div className = "bloom_taxonomy"> 
-         <span className="Title"> Infer Cognitive complexity</span>
-           <Button onClick = {this.getCognitiveComplexity}
-        >
-          Cognitive Complexity
+          <div className="bloom_taxonomy">
+            <span className="Title"> Infer Cognitive complexity</span>
+            <Button onClick={this.getCognitiveComplexity}
+            >
+              Cognitive Complexity
         </Button></div>
 
-        <div className = "hierarchy"> 
-         <span className="Title"> Get Hierarchy</span>
-           <Button onClick = {this.getHierarchy}
-        >
-          Hierarchical Taxonomy
+          <div className="hierarchy">
+            <span className="Title"> Get Hierarchy</span>
+            <Button onClick={this.getHierarchy}
+            >
+              Hierarchical Taxonomy
         </Button></div>
-      </div>
 
-      {
+          <div className="hierarchy">
+            <span className="Title"> Get Relevant Learning Objectives</span>
+            <Button onClick={this.getLearningObj}
+            >
+              Generate LO
+        </Button></div>
+
+        </div>
+
+        {
           !_.isEmpty(this.state.hierarchy) ?
-        (<div> <Hierarchyvis  hierarchy={this.state.hierarchy}/>   </div>) : (null)
+            (<div> <Hierarchyvis hierarchy={this.state.hierarchy} />   </div>) : (null)
         }
-       
-      <div className="Card">
-      {!_.isEmpty( this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
-      <div>
-      <span className="Title">Matching Cognitive Complexity</span>
-      <ul>
-            { this.state.bloomtaxonomy["bloomtaxonomy"].map(verb => (
-              <li key = {_.uniqueId()}>
-                  <div>{verb}</div>
-              </li>
-            ))}
-            </ul> </div>) : (null)}
-      </div>
- 
-      <div className="Card">
-      {!_.isEmpty(this.state.bloomVerbs["bloomverbs"]) ? (
-      <div>
-      <span className="Title">Matching Bloom Verbs</span>
-      <ul>
-            {this.state.bloomVerbs['bloomverbs'].map(verb => (
-              <li key = {_.uniqueId()}>
-                  <div>{verb}</div>
-              </li>
-            ))}
-            </ul> </div>) : (null)}
-      </div>
- 
-      {
+
+        <div className="Card">
+          {!_.isEmpty(this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
+            <div>
+              <span className="Title">Matching Cognitive Complexity</span>
+              <ul>
+                {this.state.bloomtaxonomy["bloomtaxonomy"].map(verb => (
+                  <li key={_.uniqueId()}>
+                    <div>{verb}</div>
+                  </li>
+                ))}
+              </ul> </div>) : (null)}
+        </div>
+
+        <div className="Card">
+          {!_.isEmpty(this.state.bloomVerbs["bloomverbs"]) ? (
+            <div>
+              <span className="Title">Matching Bloom Verbs</span>
+              <ul>
+                {this.state.bloomVerbs['bloomverbs'].map(verb => (
+                  <li key={_.uniqueId()}>
+                    <div>{verb}</div>
+                  </li>
+                ))}
+              </ul> </div>) : (null)}
+        </div>
+
+        {
           !_.isEmpty(this.state.keywords) ?
-        (<div> <GraphVis  keywords={this.state.keywords}/>         <Button onClick = {this.expandConcepts}
-        >
-          Expand Concepts
+            (<div> <GraphVis keywords={this.state.keywords} />         <Button onClick={this.expandConcepts}
+            >
+              Expand Concepts
         </Button></div>) : (null)
         }
-    </div>
+      </div>
+      </div>
     );
   }
 }

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from flask import jsonify, abort, request, Blueprint
 from main.extract_concepts import extract_concepts, expand_concepts
 from main.bloom_verbs import extract_bloom_verbs, get_bloom_taxonomy
+from main.fetch_lo import get_top_sentences
 
 from main.predict_taxonomy import predict_taxonomy
 
@@ -76,3 +77,34 @@ def predict_tax():
     output = predict_taxonomy(text)
 
     return jsonify({"bloomtaxonomy": output})
+
+
+
+@REQUEST_API.route('/fetchrankedlo', methods=['POST'])
+def fetch_lo():
+    """triggers code to fetch ranked los
+    """
+    if not request.files:
+        abort(400)
+    body = request.files["document"]
+    text = body.read().decode("utf-8")
+    output = get_top_sentences(text)
+
+    return jsonify({"rankedlo": output})
+
+
+MODEL_HEALTH = {
+    "health": {
+        'status': u'api is up',
+        'timestamp': (datetime.today() - timedelta(1)).timestamp()
+    },
+}
+
+
+@REQUEST_API.route('/health', methods=['GET'])
+def get_health():
+    """Return all book requests
+    @return: 200: health of api\
+    flask/response object with application/json mimetype.
+    """
+    return jsonify(MODEL_HEALTH)

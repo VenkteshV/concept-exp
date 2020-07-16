@@ -13,14 +13,24 @@ from main.evaluation.embedrank import EmbedRank as ER
 
 if __name__ == '__main__':
     # Examples from SIFRank
-    text_1 = """  Four students performed an experiment to calculate the density of a stone. 
-                While measuring the mass of the stone with the help of spring balance, the first student immersed the stone in water, 
-                the second student immersed it in sulphuric acid, the third student immersed it in kerosene and 
-                the fourth student allowed it to hang freely in air. The correct value of mass of the stone will be obtained by   
-                In this experiment, we need true value of mass that can be measured by suspending the stone freely in air.
-                When we immerse the stone in some liquid, the liquid will exert an upward force on the stone in upward direction. 
-                This changes the reading of the spring balance and we will not get the correct value. 
-            """
+    text_1 = """The crack band approach for producing mesh 
+                independent load–displacement curves for fracture in plain concrete 
+                is based on the idea that the crack opening is transformed into inelastic 
+                strain by distributing it over an element length dependent zone [5]. 
+                This approach will only produce mesh independent load–displacement curves, 
+                if the inelastic strain profiles in the finite element analysis are mesh size dependent. 
+                This requirement is an important difference to the nonlocal model which is designed to produce both 
+                mesh size independent load–displacement curves and strain profiles. In CDPM2, the crack band approach is 
+                applied only to the tensile part of the damage algorithm by replacing the stress–inelastic strain law shown in Fig. 2(b) 
+                by a stress–inelastic displacement law of the form(13)σ=ftexp(−ϵinhwft)if(ϵin>0)Here, wft is a crack opening threshold used 
+                to control the slope of the softening curve and h is the width of the crack-band, which in the present study is equal to 
+                the maximum dimension of the element along the principal direction of the strain tensor corresponding to the maximum tensile 
+                principal strain at the onset of damage. 
+                For the compressive part, a stress–inelastic strain law was used to determine
+                the compressive damage parameter, since it was reported in [14] for columns 
+                subjected to eccentric compression that inelastic strain profiles in compression do 
+                not exhibit a mesh dependence which would satisfy the assumptions of the crack-band approach. 
+                This approach of applying the crack-band approach only to the tensile part has already been successfully used in Grassl et al. [16]."""
                 
     
 

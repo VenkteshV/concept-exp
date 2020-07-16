@@ -326,7 +326,7 @@ class CoTagRankUSE(object):
             concepts = [(keyword, score) for score, keyword in keywords if keyword]
         except e:
             concepts = []
-        # print("concepts**", concepts)
+        print("concepts**", concepts)
         if expand:
             return concepts, phrase_with_positions,color_map
         else:

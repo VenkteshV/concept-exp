@@ -47,21 +47,25 @@ class UseEmbedding(Embedding):
     def __init__(self, encoder):
         super().__init__(encoder)
         # g = tf.Graph()
-        with tf.device('/GPU:0'):
+        with tf.device('/CPU:0'):
         # We will be feeding 1D tensors of text into the graph.
             self.text_input = tf.placeholder(dtype=tf.string, shape=[None])
+            
+            #kindly replace the location in hub.module with the url commented out below
+
             # "https://tfhub.dev/google/universal-sentence-encoder-large/3"
             embed = hub.Module("/home/venktesh/moduleA")
             self.embedded_text = embed(self.text_input)
             init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
         # g.finalize()
+
         self.session = tf.Session(config=tf.ConfigProto( allow_soft_placement=True))
         self.session.run(init_op)
         print("init _____")
 
 
 
-    def get_tokenized_sents_embeddings_USE(self, sents):
+    def get_tokenized_sents_embeddings_USE(self, sents,expand=False):
         # for sent in sents:
             # if '\n' in sent:
             #     raise RuntimeError('New line is not allowed inside a sentence')
@@ -69,6 +73,10 @@ class UseEmbedding(Embedding):
         vectors_USE =  self.session.run(self.embedded_text, feed_dict={self.text_input: sents})
         # with self.session.as_default():
         #     vectors_USE = vectors_USE.eval()
+        if expand:
+            None
+        else:
+            self.session.close()
         return vectors_USE
 
     def fetch_word_vector_rep(self,phrases, lemmatizer, dictionary, K, distributions):
@@ -89,7 +97,7 @@ class UseEmbedding(Embedding):
         except:
             return []
 
-    def run(self,doc_text, text, phrases, lda_model, dictionary):
+    def run(self,doc_text, text, phrases, lda_model, dictionary, expand=False):
         joint_corpus = [doc_text for doc_text, _, _ in [(doc_text, 0, -1)] + phrases]
         # doc = nlp(text)
         # for sentence in doc.sents:
@@ -107,7 +115,7 @@ class UseEmbedding(Embedding):
                                             np.newaxis]
 
 
-        embeddings = self.get_tokenized_sents_embeddings_USE(joint_corpus)
+        embeddings = self.get_tokenized_sents_embeddings_USE(joint_corpus, expand)
         text_emb = np.array(embeddings[0])
         importance_lda = 8
 

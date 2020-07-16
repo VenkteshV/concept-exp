@@ -58,7 +58,8 @@ if __name__ == '__main__':
     ARGS = PARSER.parse_args()
 
     PORT = (os.environ.get('PORT', 5000))
-
+    CORS = CORS(APP)
+    
     if ARGS.debug:
         print("Running in debug mode")
         CORS = CORS(APP)
