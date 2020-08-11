@@ -1,4 +1,4 @@
-pip install git+https://github.com/liaad/keep --timeout=10000
+pip install git+https://github.com/liaad/kep --timeout=10000
 pip install git+https://github.com/boudinfl/pke --timeout=10000
 pip install git+https://github.com/LIAAD/yake.git --timeout=10000
 python -m nltk.downloader stopwords
@@ -36,7 +36,7 @@ rm sent2vec
 # install requirements file
 pip install -r requirements.txt
 
-cd evaluation
+cd concept-extraction-lo-backend/src/main/evaluation
 unzip en_kp_list.zip
 cd ..
 # download models

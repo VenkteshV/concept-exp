@@ -22,11 +22,12 @@ Most setup for running the project is covered here, those that are not covered a
 ```bash
 sh install_dependencies.sh
 
-    export LD_LIBRARY_PATH=/home/venktesh/anaconda3/envs/unsupervised_keyword_extraction/lib
 
 ```
 The above script install dependencies downloads datasets 
 and trains LDA on datasets.
+
+    # ignore this export LD_LIBRARY_PATH=/home/venktesh/anaconda3/envs/unsupervised_keyword_extraction/lib
 
 # Installation for running EmbedRank
 
@@ -89,6 +90,11 @@ Substitute any tex in the code to get fine grained concepts tagged to it.
 The set of experiments to decide the embeddings method to use is present as a notebook under directory notebooks and includes umap visualizations and metrics calculated which shows a clear advantage of our novel representation mechanism.
 
 unzip initial_research_data.csv.zip uploaded as data in portal in notebooks directory before running notebook  . It contains both data and notebooks . The zip file is part of directory.
+
+### for running in app mode
+To run the ui cd into concept-expansion-ui . Run npm install
+After node modules are installed do npm start. After that naviagte to http://localhost:3200 to see if the Ui works.
+To start
 
 ## References
 
