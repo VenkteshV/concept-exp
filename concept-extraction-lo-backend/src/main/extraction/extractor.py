@@ -3,6 +3,8 @@ from nltk.corpus import stopwords
 import re
 from main.extraction.input_representation import InputTextObj, PosTaggingCoreNLP
 from nltk.parse import CoreNLPParser
+from nltk.stem import WordNetLemmatizer
+wnl = WordNetLemmatizer()
 
 class NPGrammars:
     GRAMMAR1 = """  NP:{<NN.*|JJ>*<NN.*>}  # Adjective(s)(optional) + Noun(s)"""
@@ -243,8 +245,17 @@ class PhraseExtractor(Extractor):
                 phrase_candidates.append((phrase, phrase_start_idx, phrase_end_idx))
 
         sorted_phrase_candidates = self._sort_candidates(phrase_candidates)
+        final_list_candidates = set()
+        selected_candidates=[]
+        for phrase,position_start,position_end in sorted_phrase_candidates:
+            if not phrase in final_list_candidates:
+                lemmatized_phrase = ' '.join(wnl.lemmatize(word) for word in phrase.split(" "))
+                final_list_candidates.add(lemmatized_phrase)
+                selected_candidates.append((lemmatized_phrase,position_start,position_end))
 
-        return sorted_phrase_candidates
+
+
+        return selected_candidates
 
     @staticmethod
     def _sort_candidates(phrases):

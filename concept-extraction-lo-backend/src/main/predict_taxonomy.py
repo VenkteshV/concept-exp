@@ -7,10 +7,10 @@ import numpy as np
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 pathData = os.path.join(dir_path, '../data')
-model_path = os.path.join(dir_path, '../data/model_save')
-LE = joblib.load(pathData+'/label_encoder')
+model_path = os.path.join(dir_path, '../data/model_save_reduced')
+LE = joblib.load(pathData+'/label_encoder_reduced')
 
-model = BertForSequenceClassification.from_pretrained(model_path,   num_labels = 1457,   
+model = BertForSequenceClassification.from_pretrained(model_path,   num_labels = 332,   
     output_attentions = False, # Whether the model returns attentions weights.
     output_hidden_states = False)
 tokenizer = BertTokenizer.from_pretrained(model_path, do_lower_case=True)

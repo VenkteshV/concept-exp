@@ -1,5 +1,7 @@
 from main.rank.concept_expansion import ConceptExpansion
 import  numpy as np
+from nltk.stem import WordNetLemmatizer
+wnl = WordNetLemmatizer()
 class KeywordExtractor:
     """Selects candidate phrases from input text, calculates their embeddings and applies Ranking algorithm
     to extract relevant keywords from text"""
@@ -13,8 +15,12 @@ class KeywordExtractor:
         if method == 'CoTagRank':
             phrases = self.phrase_extractor.run(doc_text, lists)
             text_embedding, phrase_embeddings = self.embed.run(doc_text, text, phrases, lda_model, dictionary,expand) 
-            ranked_phrases, phrases_with_positions = self.rank.run(doc_text, phrases, text_embedding,
+            if len(phrases) >2:
+                ranked_phrases, phrases_with_positions = self.rank.run(doc_text, phrases, text_embedding,
             phrase_embeddings, highlight)
+            else:
+                ranked_phrases = [(1.0, phrase[0]) for phrase in phrases]
+                phrases_with_positions = phrases
             if expand:
                 color_map = []
                 concept_expansion = ConceptExpansion()
@@ -46,7 +52,14 @@ class KeywordExtractor:
                     print("ranked_expanded_phrases", ranked_expanded_phrases)
                     ranked_phrases.extend(ranked_expanded_phrases)
                     # print("expanded concepts after reranking", ranked_phrases)
-                return ranked_phrases, phrases_with_positions,color_map
+                    final_list_candidates = set()
+                    selected_candidates=[]
+                    for relevance,phrase in ranked_phrases:
+                        if not phrase in final_list_candidates:
+                            lemmatized_phrase = ' '.join(wnl.lemmatize(word) for word in phrase.split(" "))
+                            final_list_candidates.add(lemmatized_phrase)
+                            selected_candidates.append((relevance, lemmatized_phrase))
+                return selected_candidates, phrases_with_positions,color_map
             return ranked_phrases, phrases_with_positions
         if lda_model != None:
             phrases = self.phrase_extractor.run(doc_text, lists)

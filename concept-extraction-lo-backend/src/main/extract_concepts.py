@@ -13,7 +13,6 @@ import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-
 def extract_concepts(text_1):
     nlp = spacy.load('en_core_web_sm')
     # corenlp = StanfordNLPLanguage(stanfordnlp.Pipeline(lang="en"))
@@ -27,10 +26,11 @@ def extract_concepts(text_1):
 
     expand = False
     corenlp_grammar = PhraseExtractor(grammar =  "GRAMMAR1",np_method="GRAMMAR",
-         np_tags = "NLTK",
-         stopwords = "NLTK", nlp = init_nlp({"name":"spacy" , "model_name": "en_core_web_sm"}))
+            np_tags = "NLTK",
+            stopwords = "NLTK", nlp = init_nlp({"name":"spacy" , "model_name": "en_core_web_sm"}))
     CoTagRankUSE_object = CoTagRankUSE(numOfKeyphrases, pathData, dataset_name,
                                                             normalization)
+
 
     keywords,_ = CoTagRankUSE_object.ExtractKeyphrases(text_1, highlight=True,  expand=expand)
 
@@ -39,7 +39,6 @@ def extract_concepts(text_1):
     # keywords, color_map = CoTagRankUSE_object.ExtractKeyphrases(text_1, expand=True)
     # phrase_selected = [(phrase[0].lstrip(),phrase[1],phrase[2]) for phrase in phrase_lists]
     # del color_map[-1]
-    print("keywords", keywords)
 
     for keyword in keywords:
         print("\t", keyword)

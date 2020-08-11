@@ -23,6 +23,7 @@ class Upload extends Component {
       bloomVerbs: '',
       bloomtaxonomy: '',
       hierarchy: '',
+      difficulty:'',
       learningObj: ''
     };
 
@@ -34,8 +35,39 @@ class Upload extends Component {
     this.handleSkillChange = this.handleSkillChange.bind(this);
     this.getCognitiveComplexity = this.getCognitiveComplexity.bind(this);
     this.getHierarchy = this.getHierarchy.bind(this);
+    this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
     this.getLearningObj = this.getLearningObj.bind(this);
 
+  }
+
+  handleDifficultyChange(event){
+
+    let file = this.state.files[0];
+    const req = new XMLHttpRequest();
+
+    let response = {};
+
+    const formData = new FormData();
+    formData.append("document", file, file.name);
+    // formData.append("taxonomy", this.state.hierarchy)
+
+    console.log("this.state", this.state, event);
+    req.open("POST", "http://localhost:5000/getcognitivecomplexity/"+event.value+"/"+this.state.hierarchy.bloomtaxonomy);
+
+    // this.props.fetchBloomVerbs({skillname: event})
+    req.send(formData);
+    let self = this;
+
+    req.onload = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
+      }
+      console.log("bloomtaxonomy", response)
+      self.setState({ bloomtaxonomy: response })
+      self.setState({ difficulty: event })
+
+    }
   }
 
   getLearningObj() {
@@ -75,6 +107,7 @@ class Upload extends Component {
 
     const formData = new FormData();
     formData.append("document", file, file.name);
+    // formData.append("taxonomy", this.state.hierarchy)
 
 
     req.open("POST", "http://localhost:5000/getcognitivetaxonomy");
@@ -291,6 +324,8 @@ class Upload extends Component {
   }
 
   render() {
+
+    let rankedlo = this.state.learningObj["rankedlo"] ? this.state.learningObj["rankedlo"].slice(0,3):[]
     console.log("bloomtaxonomy", this.state.bloomtaxonomy["bloomtaxonomy"]);
     return (
       <div>
@@ -299,9 +334,10 @@ class Upload extends Component {
           <div>
             <span className="Title">Relevant Learning Objectives</span>
             <ul>
-              {this.state.learningObj["rankedlo"].map(verb => (
+              {rankedlo.map(verb => (
                 <li key={_.uniqueId()}>
-                  <div>{verb}</div>
+                  <div>{verb[0]}</div>
+                  <div className="confidence">{verb[1][0]}</div>
                 </li>
               ))}
             </ul> </div>) : (null)}
@@ -330,6 +366,25 @@ class Upload extends Component {
             </div>
             <div className="Actions">{this.renderActions()}</div>
           </div>
+          <div className="hierarchy">
+            <span className="Title"> Get Learning Taxonomy</span>
+            <Button onClick={this.getHierarchy}
+            >
+              Learning Taxonomy
+        </Button></div>
+          <div className="difficulty_level">
+            <span className="Title">Select difficulty level</span>
+            <Select key={_.uniqueId()} className="select_skill"
+              options={[{ "label": "Easy", "value": "easy" },
+              { "label": "Difficult", "value": "difficult" },
+              { "label": "Tough", "value": "tough" },
+              { "label": "Very Difficult", "value": "very difficult" },
+              { "label": "Very Easy", "value": "very easy" },
+              { "label": "Medium", "value": "medium" }]}
+              value={this.state.difficulty}
+              onChange={this.handleDifficultyChange}
+            /></div>
+
           <div className="cognitive_level">
             <span className="Title">Select Cognitive complexity level</span>
             <Select key={_.uniqueId()} className="select_skill"
@@ -337,28 +392,23 @@ class Upload extends Component {
               { "label": "Skills & Application", "value": "Applying" },
               { "label": "Remembering", "value": "Remembering" },
               { "label": "Applying", "value": "Applying" },
-              { "label": "Analysing", "value": "Analysing" },
+              { "label": "Analyzing", "value": "Analyzing" },
               { "label": "Evaluating", "value": "Evaluating" },
               { "label": "Creating", "value": "Creating" }]}
               value={this.state.skillname}
               onChange={this.handleSkillChange}
             /></div>
-          <div className="bloom_taxonomy">
+          <div className="bloom_taxonomy" hidden={true}>
             <span className="Title"> Infer Cognitive complexity</span>
             <Button onClick={this.getCognitiveComplexity}
             >
               Cognitive Complexity
         </Button></div>
 
-          <div className="hierarchy">
-            <span className="Title"> Get Hierarchy</span>
-            <Button onClick={this.getHierarchy}
-            >
-              Hierarchical Taxonomy
-        </Button></div>
+
 
           <div className="hierarchy">
-            <span className="Title"> Get Relevant Learning Objectives</span>
+            <span className="Title"> Get Learning Objectives</span>
             <Button onClick={this.getLearningObj}
             >
               Generate LO
@@ -366,10 +416,6 @@ class Upload extends Component {
 
         </div>
 
-        {
-          !_.isEmpty(this.state.hierarchy) ?
-            (<div> <Hierarchyvis hierarchy={this.state.hierarchy} />   </div>) : (null)
-        }
 
         <div className="Card">
           {!_.isEmpty(this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
@@ -396,6 +442,12 @@ class Upload extends Component {
                 ))}
               </ul> </div>) : (null)}
         </div>
+
+
+        {
+          !_.isEmpty(this.state.hierarchy) ?
+            (<div> <Hierarchyvis hierarchy={this.state.hierarchy} />   </div>) : (null)
+        }
 
         {
           !_.isEmpty(this.state.keywords) ?

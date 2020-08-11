@@ -22,7 +22,7 @@ Most setup for running the project is covered here, those that are not covered a
 ```bash
 sh install_dependencies.sh
 
-export LD_LIBRARY_PATH=/home/venktesh/anaconda3/envs/unsupervised_keyword_extraction/lib
+    export LD_LIBRARY_PATH=/home/venktesh/anaconda3/envs/unsupervised_keyword_extraction/lib
 
 ```
 The above script install dependencies downloads datasets 

@@ -22,7 +22,7 @@ render() {
     graph["edges"] = [];
     for (let keywordListIndex in keyphrases["keywords"]) {
         console.log("keywordList[0]",keyphrases["keywords"][keywordListIndex])
-        if(keywordListIndex <10){
+        if(keywordListIndex <12){
         graph["nodes"].push({id: keywordListIndex, label: keyphrases["keywords"][keywordListIndex][0], color:"#41e0c9"})
         }
         else{

@@ -125,6 +125,8 @@ class UseEmbedding(Embedding):
         distribution_topic_document = distribution_topic_document.reshape(1,-1)
         word_vectors = self.fetch_word_vector_rep(joint_corpus[1:], lemmatizer, dictionary, K, distributions)   
 
+        # print("word_vectors", word_vectors, word_vectors.shape)
+        # print("joint_corpus",joint_corpus[1:])
         vectors_lda_USE = np.c_[distribution_topic_document ,  text_emb.reshape(1,-1)]
         phrase_embs = np.array(embeddings[1:])
         # term_embeddings = np.c_[word_vectors ,  phrase_embs]

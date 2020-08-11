@@ -100,6 +100,9 @@ def extract_bloom_verbs(document, skillname):
     for verbs in verbs_for_skill:
         if verbs.lower() in results:
             response.append(verbs.lower())  
+
+    if response ==[]:
+        response = [verbs.lower() for verbs in verbs_for_skill[:3]] 
     
 
 
