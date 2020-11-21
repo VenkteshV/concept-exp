@@ -50,7 +50,7 @@ class MultiClassClassifier(nn.Module):
 tokenizer = BertTokenizer.from_pretrained(model_path, do_lower_case=True)
 # model.to(device)
 model = MultiClassClassifier('bert-base-uncased',8, 768,500,440,dropout=0.1,freeze_bert=False)
-model.load_state_dict(torch.load(os.path.join(dir_path, '../data/model_save_blooms/model_weights')))
+model.load_state_dict(torch.load(os.path.join(dir_path, '../data/model_save_blooms/model_weights'),map_location=torch.device('cpu')))
 
 def get_labels(prediction):
     predicted_label =  LE.inverse_transform([prediction])

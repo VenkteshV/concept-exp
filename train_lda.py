@@ -101,8 +101,8 @@ def compute_lda_model(input_dir,
 
 
 if __name__ == "__main__":
-    input_path = "concept-extraction-lo-backend/src/data/Datasets/cbse_data/docsutf8"
-    output_path = "cbse_data_lda.gz"
+    input_path = "concept-extraction-lo-backend/src/data/Datasets/KhanAcad/docsutf8"
+    output_path = "KhanAcad.gz"
     compute_lda_model(
         input_path,
         output_file = output_path
