@@ -94,7 +94,7 @@ unzip initial_research_data.csv.zip uploaded as data in portal in notebooks dire
 ### for running in app mode
 To run the ui cd into concept-expansion-ui . Run npm install
 After node modules are installed do npm start. After that naviagte to http://localhost:3200 to see if the Ui works.
-To start
+To start the backend cd to concept-extraction-lo-backend/src and type gunicorn -c gunicorn.conf.py wsgi:APP . It would take a while to start the backend
 
 ## References
 
