@@ -54,7 +54,7 @@ class UseEmbedding(Embedding):
             #kindly replace the location in hub.module with the url commented out below
 
             # "https://tfhub.dev/google/universal-sentence-encoder-large/3"
-            embed = hub.Module("/home/venktesh/moduleA")
+            embed = hub.Module("https://tfhub.dev/google/universal-sentence-encoder-large/3")
             self.embedded_text = embed(self.text_input)
             init_op = tf.group([tf.global_variables_initializer(), tf.tables_initializer()])
         # g.finalize()
