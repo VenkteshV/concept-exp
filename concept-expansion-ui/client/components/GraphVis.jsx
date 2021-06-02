@@ -42,12 +42,14 @@ render() {
           color: "#000000"
         }
       };
+      let self = this;
 
       let events = {
         select: function(event) {
           var { nodes, edges } = event;
           console.log("Selected nodes:");
           console.log(nodes);
+          self.props.selectConcepts(keyphrases["keywords"][nodes[0]]);
           console.log("Selected edges:");
           console.log(edges);
         }
@@ -62,4 +64,5 @@ render() {
 
 GraphVis.propTypes = {
     keywords: PropTypes.object,
+    selectConcepts: PropTypes.func,
   };

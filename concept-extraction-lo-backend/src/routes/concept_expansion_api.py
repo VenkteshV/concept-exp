@@ -5,6 +5,8 @@ from main.bloom_verbs import extract_bloom_verbs, get_bloom_taxonomy
 from main.fetch_lo import get_top_sentences
 from main.predict_bloom_taxonomy import predict_bloom_taxonomy
 
+from main.lo_templates import get_lo_templates
+
 from main.predict_taxonomy import predict_taxonomy
 
 REQUEST_API = Blueprint('request_api', __name__)

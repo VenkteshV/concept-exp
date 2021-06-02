@@ -24,7 +24,9 @@ class Upload extends Component {
       bloomtaxonomy: '',
       hierarchy: '',
       difficulty:'',
-      learningObj: ''
+      learningObj: '',
+      templates: [],
+      template: ''
     };
 
     this.onFilesAdded = this.onFilesAdded.bind(this);
@@ -37,6 +39,8 @@ class Upload extends Component {
     this.getHierarchy = this.getHierarchy.bind(this);
     this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
     this.getLearningObj = this.getLearningObj.bind(this);
+    this.handleTemplate = this.handleTemplate.bind(this);
+    this.selectConcepts = this.selectConcepts.bind(this);
 
   }
 
@@ -52,7 +56,7 @@ class Upload extends Component {
     // formData.append("taxonomy", this.state.hierarchy)
 
     console.log("this.state", this.state, event);
-    req.open("POST", "http://3.7.119.1:5000/getcognitivecomplexity/"+event.value+"/"+this.state.hierarchy.bloomtaxonomy);
+    req.open("POST", "http://localhost:5000/getcognitivecomplexity/"+event.value+"/"+this.state.hierarchy.bloomtaxonomy);
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -81,7 +85,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://3.7.119.1:5000/fetchrankedlo");
+    req.open("POST", "http://localhost:5000/fetchrankedlo");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -110,7 +114,7 @@ class Upload extends Component {
     // formData.append("taxonomy", this.state.hierarchy)
 
 
-    req.open("POST", "http://3.7.119.1:5000/getcognitivetaxonomy");
+    req.open("POST", "http://localhost:5000/getcognitivetaxonomy");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -131,6 +135,7 @@ class Upload extends Component {
     this.setState({ skillname: event })
     let file = this.state.files[0];
     const req = new XMLHttpRequest();
+    const req1 =  new XMLHttpRequest();
 
     let response = {};
 
@@ -138,7 +143,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://3.7.119.1:5000/getbloomverbs/" + event.value);
+    req.open("POST", "http://localhost:5000/getbloomverbs/" + event.value);
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -152,12 +157,30 @@ class Upload extends Component {
       console.log("response", response)
       self.setState({ bloomVerbs: response })
     }
+    req1.open("GET", "http://localhost:5000/lo/templates/" + event.value);
+
+    // this.props.fetchBloomVerbs({skillname: event})
+    req1.send(formData);
+
+    req1.onload = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(this.responseText);
+        response = JSON.parse(this.responseText)
+      }
+      console.log("response", response)
+      self.setState({ templates: response })
+    }
   }
 
   onFilesAdded(files) {
     this.setState(prevState => ({
       files: prevState.files.concat(files)
     }));
+  }
+
+  handleTemplate(event) {
+    this.setState({template:event.value})
+
   }
 
   async uploadFiles() {
@@ -245,10 +268,10 @@ class Upload extends Component {
 
 
       if (isExpand) {
-        req.open("POST", "http://3.7.119.1:5000/concept/expand");
+        req.open("POST", "http://localhost:5000/concept/expand");
       }
       else {
-        req.open("POST", "http://3.7.119.1:5000/concept/extract");
+        req.open("POST", "http://localhost:5000/concept/extract");
       } req.send(formData);
     });
   }
@@ -296,6 +319,11 @@ class Upload extends Component {
     }
   }
 
+  selectConcepts(concept){
+    let generatedLo = this.state.template.replace("[MASK]",concept[0]);
+    this.setState({template:generatedLo});
+  }
+
   getHierarchy() {
     let file = this.state.files[0];
     const req = new XMLHttpRequest();
@@ -306,7 +334,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://3.7.119.1:5000/predicttaxonomy");
+    req.open("POST", "http://localhost:5000/predicttaxonomy");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -340,7 +368,7 @@ class Upload extends Component {
                   <div className="confidence">{verb[1][0]}</div>
                 </li>
               ))}
-            </ul> </div>) : (null)}
+            </ul> </div>) : (<span>LO Generator</span>)}
       </div>
       <div className="UploadFile">
         <div className="Card">
@@ -386,7 +414,7 @@ class Upload extends Component {
             /></div>
 
           <div className="cognitive_level">
-            <span className="Title">Select Cognitive complexity level</span>
+            <span className="Title">Select Cognitive level</span>
             <Select key={_.uniqueId()} className="select_skill"
               options={[{ "label": "Knowledge & understanding ", "value": "Understanding" },
               { "label": "Skills & Application", "value": "Applying" },
@@ -397,6 +425,13 @@ class Upload extends Component {
               { "label": "Creating", "value": "Creating" }]}
               value={this.state.skillname}
               onChange={this.handleSkillChange}
+            /></div>
+               <div className="cognitive_level">
+            <span className="Title">Select Templates</span>
+            <Select key={_.uniqueId()} className="select_skill"
+              options={this.state.templates["loTemplates"]}
+              value={this.state.template}
+              onChange={this.handleTemplate}
             /></div>
           <div className="bloom_taxonomy" hidden={true}>
             <span className="Title"> Infer Cognitive complexity</span>
@@ -409,13 +444,12 @@ class Upload extends Component {
 
           <div className="hierarchy">
             <span className="Title"> Get Learning Objectives</span>
-            <Button onClick={this.getLearningObj}
+            <Button  onClick={this.getLearningObj}
             >
               Generate LO
         </Button></div>
 
         </div>
-
 
         <div className="Card">
           {!_.isEmpty(this.state.bloomtaxonomy["bloomtaxonomy"]) ? (
@@ -441,8 +475,20 @@ class Upload extends Component {
                   </li>
                 ))}
               </ul> </div>) : (null)}
+
         </div>
 
+
+     
+        <div className="Card">
+          {!_.isEmpty(this.state.template) ? (
+            <div>
+              {/* <span className="Title">Generated Learning Objective</span> */}
+              <div>
+              {this.state.template}
+              </div>
+               </div>) : (null)}
+        </div>
 
         {
           !_.isEmpty(this.state.hierarchy) ?
@@ -451,7 +497,7 @@ class Upload extends Component {
 
         {
           !_.isEmpty(this.state.keywords) ?
-            (<div> <GraphVis keywords={this.state.keywords} />         <Button onClick={this.expandConcepts}
+            (<div> <GraphVis keywords={this.state.keywords} selectConcepts = {this.selectConcepts} />         <Button onClick={this.expandConcepts}
             >
               Expand Concepts
         </Button></div>) : (null)

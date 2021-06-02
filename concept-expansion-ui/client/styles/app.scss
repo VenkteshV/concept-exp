@@ -1,6 +1,7 @@
 body {
   font: 100% $font-lato;
   font-weight: 400;
+  font-size: 1rem;
   color: $dark-gray-color;
   letter-spacing: 0.075rem;
 }
@@ -108,7 +109,7 @@ button {
 }
 .label-style {
   margin-top: 66px;
-font-size: 3rem
+font-size: 2rem
 }
 .fc-content-name,.fc-content-category,.fc-content-nationality,.fc-content-contractExpiry,.fc-content-penalties,.fc-content-workRate{
   font-size: 1.5rem;
