@@ -4,6 +4,8 @@ from main.extract_concepts import extract_concepts, expand_concepts
 from main.bloom_verbs import extract_bloom_verbs, get_bloom_taxonomy
 from main.fetch_lo import get_top_sentences
 from main.predict_bloom_taxonomy import predict_bloom_taxonomy
+from main.predict_taxonomy import recommend_taxonomy
+from main.lo_templates import get_lo_templates
 
 from main.lo_templates import get_lo_templates
 
@@ -67,6 +69,18 @@ def get_cognitive_taxonomy():
 
     return jsonify({"bloomtaxonomy": bloom_verbs})
 
+@REQUEST_API.route('/recommendtaxonomy', methods=['POST'])
+def recommend_tax():
+    """triggers code to recommendtaxonomy hierarchy
+    """
+    if not request.files:
+        abort(400)
+    body = request.files["document"]
+    text = body.read().decode("utf-8")
+    output = recommend_taxonomy(text)
+    print("output",output)
+
+    return jsonify({"subjecttaxonomy": output})
 
 @REQUEST_API.route('/getcognitivecomplexity/<string:difficulty_level>/<string:taxonomy>', methods=['POST'])
 def get_cognitive_complexity(difficulty_level,taxonomy):
@@ -81,6 +95,18 @@ def get_cognitive_complexity(difficulty_level,taxonomy):
     bloom_verbs = predict_bloom_taxonomy(text,taxonomy,difficulty_level)
 
     return jsonify({"bloomtaxonomy": [bloom_verbs]})
+
+
+@REQUEST_API.route('/lo/templates/<string:skillname>', methods=['GET'])
+def lo_templates(skillname):
+    """triggers code to get lo templates
+    """
+
+    # if not request.files:
+    #     abort(400)
+    templates = get_lo_templates(skillname)
+    
+    return jsonify({"loTemplates": templates})
 
 @REQUEST_API.route('/predicttaxonomy', methods=['POST'])
 def predict_tax():
