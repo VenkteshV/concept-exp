@@ -137,7 +137,7 @@ def recommend_taxonomy(text):
     final_list = []
     for label in top_k_labels:
         for formatted_label in labels_with_board:
-            if label in formatted_label:
+            if label in formatted_label and len(label.split(">>"))>1:
                 final_list.append(formatted_label)
 
     return final_list
