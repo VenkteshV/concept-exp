@@ -13,7 +13,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 pathData = os.path.join(dir_path, '../data')
 model_path = os.path.join(dir_path, '../data/model_save_reduced')
-model_path_recommend = os.path.join(dir_path, '../data/model_euclidean_1')
+model_path_recommend = os.path.join(dir_path, '../data/model_euclidean_cos')
 
 test_labels = joblib.load(pathData+'/test_labels')
 test_labels = np.array(test_labels)
