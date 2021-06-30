@@ -56,7 +56,7 @@ class Upload extends Component {
     // formData.append("taxonomy", this.state.hierarchy)
 
     console.log("this.state", this.state, event);
-    req.open("POST", "http://localhost:5000/getcognitivecomplexity/"+event.value+"/"+this.state.hierarchy.bloomtaxonomy);
+    req.open("POST", "http://3.7.119.1:5000/getcognitivecomplexity/"+event.value+"/"+this.state.hierarchy.bloomtaxonomy);
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -85,7 +85,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://localhost:5000/fetchrankedlo");
+    req.open("POST", "http://3.7.119.1:5000/fetchrankedlo");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -114,7 +114,7 @@ class Upload extends Component {
     // formData.append("taxonomy", this.state.hierarchy)
 
 
-    req.open("POST", "http://localhost:5000/getcognitivetaxonomy");
+    req.open("POST", "http://3.7.119.1:5000/getcognitivetaxonomy");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -143,7 +143,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://localhost:5000/getbloomverbs/" + event.value);
+    req.open("POST", "http://3.7.119.1:5000/getbloomverbs/" + event.value);
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
@@ -157,7 +157,7 @@ class Upload extends Component {
       console.log("response", response)
       self.setState({ bloomVerbs: response })
     }
-    req1.open("GET", "http://localhost:5000/lo/templates/" + event.value);
+    req1.open("GET", "http://3.7.119.1:5000/lo/templates/" + event.value);
 
     // this.props.fetchBloomVerbs({skillname: event})
     req1.send(formData);
@@ -268,10 +268,10 @@ class Upload extends Component {
 
 
       if (isExpand) {
-        req.open("POST", "http://localhost:5000/concept/expand");
+        req.open("POST", "http://3.7.119.1:5000/concept/expand");
       }
       else {
-        req.open("POST", "http://localhost:5000/concept/extract");
+        req.open("POST", "http://3.7.119.1:5000/concept/extract");
       } req.send(formData);
     });
   }
@@ -334,7 +334,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://localhost:5000/predicttaxonomy");
+    req.open("POST", "http://3.7.119.1:5000/predicttaxonomy");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
