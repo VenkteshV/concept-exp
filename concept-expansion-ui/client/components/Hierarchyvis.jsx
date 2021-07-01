@@ -19,12 +19,12 @@ render() {
     let graph = {};
     graph["nodes"] = [];
     graph["edges"] = [];
-    let hierarchy_list = keyphrases["bloomtaxonomy"].split(">>")
-    console.log("graph", graph);
+    let hierarchy_list = keyphrases["subjecttaxonomy"].slice(0,5)
+    // console.log("graph", graph);
     for (let keywordListIndex in hierarchy_list) {
         let nextIndex = eval(keywordListIndex)+eval(1)
-        console.log("keywordList[0]",hierarchy_list[keywordListIndex],hierarchy_list[nextIndex],nextIndex, keywordListIndex)
-        graph["nodes"].push({id: keywordListIndex, label: hierarchy_list[keywordListIndex], color:"#41e0c9"});
+        // console.log("keywordList[0]",hierarchy_list[keywordListIndex])
+        graph["nodes"].push({id: keywordListIndex, label: hierarchy_list[keywordListIndex], color:"#41e0c9", height:"90px"});
         graph["edges"].push({from: keywordListIndex, to: nextIndex });
     }
 
@@ -49,7 +49,7 @@ render() {
       };
     return(
   <div>
-    <Graph graph={graph} options={options} events={events} style={{ height: "640px", width: "640px" }} />
+    <Graph graph={graph} options={options} events={events} style={{ height: "740px", width: "740px" }} />
   </div>
 );
     }
