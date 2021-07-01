@@ -334,7 +334,7 @@ class Upload extends Component {
     formData.append("document", file, file.name);
 
 
-    req.open("POST", "http://3.7.119.1:5000/predicttaxonomy");
+    req.open("POST", "http://3.7.119.1:5000/recommendtaxonomy");
 
     // this.props.fetchBloomVerbs({skillname: event})
     req.send(formData);
